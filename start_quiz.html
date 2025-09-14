@@ -1,0 +1,127 @@
+{% extends "base/base.html" %}
+
+{% block title %}Start Quiz - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="gradient-bg text-white py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+            <i class="fas fa-play mr-3 floating"></i>Start Quiz
+        </h1>
+        <p class="text-xl text-gray-200">{{ quiz.title }}</p>
+    </div>
+</section>
+
+<!-- Quiz Info Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <!-- Quiz Header -->
+            <div class="bg-gradient-to-r from-primary to-accent text-white p-8">
+                <h2 class="text-3xl font-bold mb-2">{{ quiz.title }}</h2>
+                <p class="text-gray-200">Get ready to test your knowledge!</p>
+            </div>
+            
+            <!-- Quiz Details -->
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-question-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Questions</h3>
+                                <p class="text-2xl font-bold text-primary">{{ quiz.num_questions }} questions</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 bg-warning rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-clock text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Time Limit</h3>
+                                <p class="text-2xl font-bold text-warning">
+                                    {% if quiz.duration_mode == 'per_question' %}
+                                        {{ quiz.duration_seconds // 60 }} min per question
+                                    {% else %}
+                                        {{ quiz.duration_seconds // 60 }} min total
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Student Name Form -->
+                <form method="POST" class="space-y-6">
+                    <div>
+                        <label for="student_name" class="block text-lg font-semibold text-gray-900 mb-3">
+                            <i class="fas fa-user mr-2 text-primary"></i>Enter Your Name
+                        </label>
+                        <input type="text" 
+                               id="student_name" 
+                               name="student_name" 
+                               placeholder="Your full name" 
+                               required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-lg transition-all duration-300">
+                    </div>
+                    
+                    <!-- Instructions -->
+                    <div class="bg-blue-50 border-l-4 border-primary p-6 rounded-xl">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-primary text-xl mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Instructions</h4>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-2"></i>
+                                        Read each question carefully before answering
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-2"></i>
+                                        You can only select one answer per question
+                                    </li>
+                                    {% if quiz.duration_mode == 'per_question' %}
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-2"></i>
+                                        Each question has a time limit
+                                    </li>
+                                    {% else %}
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-2"></i>
+                                        The entire quiz has a time limit
+                                    </li>
+                                    {% endif %}
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-2"></i>
+                                        Your answers will be automatically saved
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                        <button type="submit" 
+                                class="flex-1 bg-gradient-to-r from-primary to-accent text-white px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2">
+                            <i class="fas fa-rocket"></i>
+                            <span>Start Quiz</span>
+                        </button>
+                        <a href="{{ url_for('student_quizzes') }}" 
+                           class="flex-1 bg-gray-100 text-gray-700 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-200 transition-all duration-300 flex items-center justify-center space-x-2">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Back to Quizzes</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

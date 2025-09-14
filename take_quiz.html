@@ -1,0 +1,297 @@
+{% extends "base/base.html" %}
+
+{% block title %}Quiz: {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<!-- Quiz Header -->
+<div class="bg-white shadow-lg sticky top-16 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div class="mb-4 md:mb-0">
+                <h1 class="text-2xl font-bold text-gray-900">{{ quiz.title }}</h1>
+                <p class="text-gray-600">Question {{ question_num }} of {{ total_questions }}</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">Time Remaining</div>
+                    <div id="timer" class="text-3xl font-bold text-primary timer-pulse">
+                        {% if quiz.duration_mode == 'per_question' %}
+                            {{ quiz.duration_seconds // 60 }}:00
+                        {% else %}
+                            {{ (quiz.duration_seconds - (attempt.current_question * (quiz.duration_seconds // total_questions))) // 60 }}:00
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="mt-4">
+            <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                <span>Progress</span>
+                <span>{{ question_num }}/{{ total_questions }}</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div class="progress-bar h-3 rounded-full transition-all duration-500" 
+                     style="width: {{ (question_num / total_questions) * 100 }}%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Quiz Content -->
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <!-- Question Header -->
+        <div class="bg-gradient-to-r from-primary to-accent text-white p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold">Question {{ question_num }}</h2>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-question-circle"></i>
+                    <span class="text-sm opacity-90">Multiple Choice</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question Content -->
+        <div class="p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-8 leading-relaxed">
+                {{ question.question_text }}
+            </h3>
+            
+            <!-- Answer Options -->
+            <div class="space-y-4 mb-8">
+                <button type="button" 
+                        class="option-btn w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-blue-50 transition-all duration-300 group"
+                        data-option="A" onclick="selectOption('A')">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <span class="font-bold">A</span>
+                        </div>
+                        <span class="text-lg">{{ question.option_a }}</span>
+                    </div>
+                </button>
+                
+                <button type="button" 
+                        class="option-btn w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-blue-50 transition-all duration-300 group"
+                        data-option="B" onclick="selectOption('B')">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <span class="font-bold">B</span>
+                        </div>
+                        <span class="text-lg">{{ question.option_b }}</span>
+                    </div>
+                </button>
+                
+                <button type="button" 
+                        class="option-btn w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-blue-50 transition-all duration-300 group"
+                        data-option="C" onclick="selectOption('C')">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <span class="font-bold">C</span>
+                        </div>
+                        <span class="text-lg">{{ question.option_c }}</span>
+                    </div>
+                </button>
+                
+                <button type="button" 
+                        class="option-btn w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-blue-50 transition-all duration-300 group"
+                        data-option="D" onclick="selectOption('D')">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <span class="font-bold">D</span>
+                        </div>
+                        <span class="text-lg">{{ question.option_d }}</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="bg-gray-50 px-8 py-6">
+            <div class="flex flex-col sm:flex-row gap-4 justify-between">
+                <button type="button" 
+                        onclick="skipQuestion()"
+                        class="bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-300 flex items-center justify-center space-x-2">
+                    <i class="fas fa-forward"></i>
+                    <span>Skip Question</span>
+                </button>
+                <button type="button" 
+                        id="submitBtn" 
+                        onclick="submitAnswer()" 
+                        disabled
+                        class="bg-gradient-to-r from-primary to-accent text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                    <i class="fas fa-check"></i>
+                    <span>Submit Answer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form for data -->
+<form id="quizForm" style="display: none;">
+    <input type="hidden" id="questionId" value="{{ question.id }}">
+    <input type="hidden" id="selectedAnswer" value="">
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let selectedOption = null;
+let timeLeft = {{ quiz.duration_seconds }};
+let timerInterval;
+
+// Enhanced timer functionality
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            if (selectedOption) {
+                submitAnswer();
+            } else {
+                skipQuestion();
+            }
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Enhanced visual feedback for timer
+    if (timeLeft <= 10) {
+        timerElement.className = 'text-3xl font-bold text-danger timer-pulse';
+        timerElement.style.animation = 'pulse 0.5s infinite';
+    } else if (timeLeft <= 30) {
+        timerElement.className = 'text-3xl font-bold text-warning timer-pulse';
+        timerElement.style.animation = 'pulse 1s infinite';
+    } else if (timeLeft <= 60) {
+        timerElement.className = 'text-3xl font-bold text-secondary timer-pulse';
+    } else {
+        timerElement.className = 'text-3xl font-bold text-primary timer-pulse';
+    }
+}
+
+function selectOption(option) {
+    // Remove previous selection with animation
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.classList.remove('option-selected');
+        btn.classList.add('border-gray-200');
+        btn.querySelector('.w-8').classList.remove('bg-primary', 'text-white');
+        btn.querySelector('.w-8').classList.add('bg-gray-100');
+    });
+    
+    // Add selection to clicked option with animation
+    const selectedBtn = document.querySelector(`[data-option="${option}"]`);
+    selectedBtn.classList.add('option-selected');
+    selectedBtn.classList.remove('border-gray-200');
+    selectedBtn.querySelector('.w-8').classList.add('bg-primary', 'text-white');
+    selectedBtn.querySelector('.w-8').classList.remove('bg-gray-100');
+    
+    selectedOption = option;
+    document.getElementById('selectedAnswer').value = option;
+    
+    // Enable submit button with animation
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+}
+
+function submitAnswer() {
+    if (!selectedOption) return;
+    
+    const questionId = document.getElementById('questionId').value;
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
+    submitBtn.disabled = true;
+    
+    fetch('/student/submit-answer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            question_id: questionId,
+            selected_answer: selectedOption
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Add success animation before redirect
+            document.body.style.transition = 'opacity 0.3s ease-out';
+            document.body.style.opacity = '0.7';
+            setTimeout(() => {
+                window.location.reload();
+            }, 300);
+        } else {
+            alert('Error submitting answer: ' + data.error);
+            // Reset button
+            submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Submit Answer</span>';
+            submitBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting answer');
+        // Reset button
+        submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Submit Answer</span>';
+        submitBtn.disabled = false;
+    });
+}
+
+function skipQuestion() {
+    selectedOption = null;
+    submitAnswer();
+}
+
+// Add keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.key >= '1' && e.key <= '4') {
+        const options = ['A', 'B', 'C', 'D'];
+        selectOption(options[parseInt(e.key) - 1]);
+    } else if (e.key === 'Enter' && selectedOption) {
+        submitAnswer();
+    } else if (e.key === ' ') {
+        e.preventDefault();
+        skipQuestion();
+    }
+});
+
+// Add smooth animations on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate elements in
+    const elements = document.querySelectorAll('.option-btn, #submitBtn');
+    elements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            el.style.transition = 'all 0.3s ease-out';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Start timer
+    startTimer();
+    
+    // Add focus management
+    document.querySelector('.option-btn').focus();
+});
+
+// Prevent accidental page refresh
+window.addEventListener('beforeunload', function(e) {
+    e.preventDefault();
+    e.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+});
+</script>
+{% endblock %}

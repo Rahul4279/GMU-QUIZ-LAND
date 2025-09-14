@@ -1,0 +1,131 @@
+{% extends "base/base.html" %}
+
+{% block title %}GMU Quiz Land - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="gradient-bg text-white py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="animate-fade-in">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                Welcome to
+                <span class="block bg-gradient-to-r from-secondary to-yellow-300 bg-clip-text text-transparent">
+                    GMU Quiz Land
+                </span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
+                Test your knowledge with our interactive quiz platform. Challenge yourself, learn, and grow!
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{{ url_for('student_quizzes') }}" 
+                   class="bg-white text-primary px-8 py-4 rounded-full text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center space-x-2">
+                    <i class="fas fa-play"></i>
+                    <span>Start Taking Quizzes</span>
+                </a>
+                <a href="#features" 
+                   class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-primary transition-all duration-300">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="absolute top-20 left-10 floating">
+        <i class="fas fa-lightbulb text-4xl text-secondary opacity-60"></i>
+    </div>
+    <div class="absolute top-40 right-20 floating" style="animation-delay: 1s;">
+        <i class="fas fa-brain text-3xl text-secondary opacity-60"></i>
+    </div>
+    <div class="absolute bottom-20 left-1/4 floating" style="animation-delay: 2s;">
+        <i class="fas fa-trophy text-3xl text-secondary opacity-60"></i>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose GMU Quiz Land?</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Experience the future of online learning with our cutting-edge quiz platform
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="quiz-card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-book text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Interactive Quizzes</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Take engaging quizzes on various topics with real-time feedback and instant results.
+                </p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="quiz-card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-warning to-secondary rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-clock text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Timed Challenges</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Test your speed and accuracy with our advanced timed quiz system and countdown timers.
+                </p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="quiz-card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-success to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-chart-line text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Instant Results</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Get immediate feedback, detailed analytics, and track your progress over time.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="animate-fade-in">
+                <div class="text-4xl font-bold text-primary mb-2">100+</div>
+                <div class="text-gray-600">Active Quizzes</div>
+            </div>
+            <div class="animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="text-4xl font-bold text-accent mb-2">10K+</div>
+                <div class="text-gray-600">Students</div>
+            </div>
+            <div class="animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="text-4xl font-bold text-secondary mb-2">50K+</div>
+                <div class="text-gray-600">Questions</div>
+            </div>
+            <div class="animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="text-4xl font-bold text-success mb-2">95%</div>
+                <div class="text-gray-600">Satisfaction</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 gradient-bg text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl font-bold mb-6">Ready to Start Learning?</h2>
+        <p class="text-xl mb-8 text-gray-200">
+            Join thousands of students who are already improving their knowledge with our quizzes
+        </p>
+        <a href="{{ url_for('student_quizzes') }}" 
+           class="bg-white text-primary px-10 py-4 rounded-full text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center space-x-2">
+            <i class="fas fa-rocket"></i>
+            <span>Get Started Now</span>
+        </a>
+    </div>
+</section>
+{% endblock %}

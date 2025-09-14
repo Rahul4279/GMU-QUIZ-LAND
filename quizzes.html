@@ -1,0 +1,118 @@
+{% extends "base/base.html" %}
+
+{% block title %}Available Quizzes - GMU Quiz Land{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="gradient-bg text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+            <i class="fas fa-list-alt mr-3 floating"></i>Available Quizzes
+        </h1>
+        <p class="text-xl text-gray-200 max-w-3xl mx-auto">
+            Choose from our collection of interactive quizzes and test your knowledge
+        </p>
+    </div>
+</section>
+
+<!-- Quizzes Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if quizzes %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for quiz in quizzes %}
+                <div class="quiz-card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors duration-300">
+                                {{ quiz.title }}
+                            </h3>
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
+                                <i class="fas fa-book text-white text-lg"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-question-circle w-5 text-primary mr-3"></i>
+                                <span class="font-medium">{{ quiz.num_questions }} Questions</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-clock w-5 text-warning mr-3"></i>
+                                <span class="font-medium">
+                                    {% if quiz.duration_mode == 'per_question' %}
+                                        {{ quiz.duration_seconds // 60 }} min per question
+                                    {% else %}
+                                        {{ quiz.duration_seconds // 60 }} min total
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="flex items-center text-gray-500 text-sm">
+                                <i class="fas fa-calendar w-5 mr-3"></i>
+                                <span>Created: {{ quiz.created_at.strftime('%B %d, %Y') }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-success rounded-full"></div>
+                                <span class="text-sm text-gray-600">Available</span>
+                            </div>
+                            <a href="{{ url_for('start_quiz', quiz_id=quiz.id) }}" 
+                               class="bg-gradient-to-r from-primary to-accent text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center space-x-2">
+                                <i class="fas fa-play"></i>
+                                <span>Start Quiz</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-20">
+                <div class="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-inbox text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">No Quizzes Available</h3>
+                <p class="text-gray-600 mb-8 max-w-md mx-auto">
+                    We're working on adding new quizzes. Check back soon for exciting challenges!
+                </p>
+                <a href="{{ url_for('index') }}" 
+                   class="bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-home mr-2"></i>Back to Home
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Quick Stats -->
+{% if quizzes %}
+<section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="animate-fade-in">
+                <div class="text-3xl font-bold text-primary mb-2">{{ quizzes|length }}</div>
+                <div class="text-gray-600">Available Quizzes</div>
+            </div>
+            <div class="animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="text-3xl font-bold text-accent mb-2">{{ quizzes|map(attribute='num_questions')|sum }}</div>
+                <div class="text-gray-600">Total Questions</div>
+            </div>
+            <div class="animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="text-3xl font-bold text-secondary mb-2">
+                    {{ quizzes|selectattr('duration_mode', 'equalto', 'per_question')|list|length }}
+                </div>
+                <div class="text-gray-600">Per-Question Timed</div>
+            </div>
+            <div class="animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="text-3xl font-bold text-success mb-2">
+                    {{ quizzes|selectattr('duration_mode', 'equalto', 'overall')|list|length }}
+                </div>
+                <div class="text-gray-600">Overall Timed</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
